@@ -5,16 +5,8 @@
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'chitragupta'
+gem 'chitragupta', git: "git://github.com/browserstack/chitragupta-rails.git"
 ```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install chitragupta
 
 ## Usage
 
