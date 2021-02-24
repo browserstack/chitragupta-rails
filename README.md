@@ -25,7 +25,8 @@ require "chitragupta"
 
 Chitragupta::setup_application_logger(RailsApplicationModule, current_user_function)
 ```
-The `current_user_function` is a callable which when called should return the current user object.
+The `RailsApplicationModule` should be replaced with the rails application module.
+The `current_user_function` should be replaced with a callable which when called returns the current user object.
 
 ## Contributing
 
