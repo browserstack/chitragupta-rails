@@ -77,7 +77,7 @@ module Chitragupta
       else
         data[:log] = {}
         data[:meta] = {}
-        data[:log][:dynamic_data] = message.is_a?(String) ? message : message.inspect
+        data[:log][:dynamic_data] = message.is_a?(String) ? message : message.inspect if !message.nil?
       end
 
       data[:meta][:format] = {}

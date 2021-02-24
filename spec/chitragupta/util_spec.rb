@@ -58,27 +58,12 @@ RSpec.describe Chitragupta::Util do
 
 
   context 'sanitize_keys' do
-    let(:initialized_data) { {log: {}, meta: {}} }
-    
-    before(:each) do
-      expect(Chitragupta::Util).to receive(:initialize_data).and_return(initialized_data)
-    end
-    require 'time'
-    timestamp = Time.parse("2021-02-22T18:05:48Z")
-    test_cases = [
-      {should: "dump string message as is in dynamic_data", params: {log_level: "INFO", timestamp: timestamp, message: "dynamic_data"},
-          expected_output: "{\"log\":{\"level\":\"INFO\",\"kind\":null,\"id\":null,\"dynamic_data\":\"dynamic_data\"},\"meta\":{\"timestamp\":\"2021-02-22T18:05:48Z\",\"team\":null,\"component\":null,\"application\":null}}\n"},
-      {should: "parse contents of message hash", params: {log_level: "INFO", timestamp: timestamp, message: {log: {kind: "TEST", id: "123", dynamic_data: "ASD"}}},
-          expected_output: "{\"log\":{\"level\":\"INFO\",\"kind\":\"TEST\",\"id\":\"123\",\"dynamic_data\":\"ASD\"},\"meta\":{\"timestamp\":\"2021-02-22T18:05:48Z\",\"team\":null,\"component\":null,\"application\":null}}\n"},
-      {should: "ignore improperly nested kind in message", params: {log_level: "INFO", timestamp: timestamp, message: {kind: "IGNORED_KIND"}},
-          expected_output: "{\"log\":{\"level\":\"INFO\",\"kind\":null,\"id\":null,\"dynamic_data\":null},\"meta\":{\"timestamp\":\"2021-02-22T18:05:48Z\",\"team\":null,\"component\":null,\"application\":null}}\n"},
-      {should: "dump inspected message object", params: {log_level: "INFO", timestamp: timestamp, message: true},
-          expected_output: "{\"log\":{\"level\":\"INFO\",\"kind\":null,\"id\":null,\"dynamic_data\":\"true\"},\"meta\":{\"timestamp\":\"2021-02-22T18:05:48Z\",\"team\":null,\"component\":null,\"application\":null}}\n"}]
 
-    test_cases.each do |t|
-      it "should #{t[:should]}" do
-        expect(Chitragupta::Util.sanitize_keys(t[:params][:log_level], t[:params][:timestamp], t[:params][:message])).to eq(t[:expected_output])
-      end
+    it 'should populate log.level and meta.timestamp' do
+      initialized_data = {log: {}, meta: {}}
+      timestamp = Time.parse("2021-02-22T18:05:48Z")
+      expect(Chitragupta::Util).to receive(:initialize_data).and_return(initialized_data)
+      expect(Chitragupta::Util.sanitize_keys("INFO", timestamp, nil)).to eq("{\"log\":{\"level\":\"INFO\"},\"meta\":{\"timestamp\":\"2021-02-22T18:05:48Z\"}}\n")
     end
 
   end
@@ -193,14 +178,14 @@ RSpec.describe Chitragupta::Util do
     it 'should create common keys and add call populate_server_data if called_as_rails_server? returns true' do
       expect(Chitragupta::Util).to receive(:called_as_rails_server?).and_return(true)
       expect(Chitragupta::Util).to receive(:populate_server_data).once
-      expect(Chitragupta::Util.send(:initialize_data, nil)).to eq({log: {}, meta: {:format=>{}}, :data=>{}})
+      expect(Chitragupta::Util.send(:initialize_data, nil)).to eq({log: {}, meta: {format: {}}, data: {}})
     end
 
     it 'should create common keys and add call populate_task_data if called_as_rake? returns true' do
       expect(Chitragupta::Util).to receive(:called_as_rails_server?).and_return(false)
       expect(Chitragupta::Util).to receive(:called_as_rake?).and_return(true)
       expect(Chitragupta::Util).to receive(:populate_task_data).once
-      expect(Chitragupta::Util.send(:initialize_data, nil)).to eq({log: {}, meta: {:format=>{}}, :data=>{}})
+      expect(Chitragupta::Util.send(:initialize_data, nil)).to eq({log: {}, meta: {format: {}}, data: {}})
     end
 
     it 'should create common keys and add call populate_bg_worker_data if called_as_sidekiq? returns true' do
@@ -208,7 +193,34 @@ RSpec.describe Chitragupta::Util do
       expect(Chitragupta::Util).to receive(:called_as_rake?).and_return(false)
       expect(Chitragupta::Util).to receive(:called_as_sidekiq?).and_return(true)
       expect(Chitragupta::Util).to receive(:populate_bg_worker_data).once
-      expect(Chitragupta::Util.send(:initialize_data, nil)).to eq({log: {}, meta: {:format=>{}}, :data=>{}})
+      expect(Chitragupta::Util.send(:initialize_data, nil)).to eq({log: {}, meta: {format: {}}, data: {}})
+    end
+
+    context 'called_as_rails_server?, called_as_rake? and called_as_sidekiq? are all false' do
+
+      before(:each) do
+        expect(Chitragupta::Util).to receive(:called_as_rails_server?).and_return(false)
+        expect(Chitragupta::Util).to receive(:called_as_rake?).and_return(false)
+        expect(Chitragupta::Util).to receive(:called_as_sidekiq?).and_return(false)
+      end
+
+
+      test_cases = [
+          {should: "dump string message as is in dynamic_data", message: "dynamic_data",
+              expected_output: {data: {}, log: {dynamic_data: "dynamic_data"}, meta: {format: {}}}},
+          {should: "parse contents of message hash", message: {log: {kind: "TEST", id: "123", dynamic_data: "ASD"}},
+              expected_output: {data: {}, log: {kind: "TEST", id: "123", dynamic_data: "ASD"}, meta: {format: {}}}},
+          {should: "ignore improperly nested kind in message", message: {kind: "IGNORED_KIND"},
+              expected_output: {data: {}, log: {}, meta: {format: {}}}},
+          {should: "dump inspected message object", message: true,
+              expected_output: {data: {}, log: {dynamic_data: "true"}, meta: {format: {}}}}]
+
+      test_cases.each do |t|
+        it "should #{t[:should]}" do
+          expect(Chitragupta::Util.send(:initialize_data, t[:message])).to eq(t[:expected_output])
+        end
+      end
+
     end
 
   end
