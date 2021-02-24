@@ -55,7 +55,7 @@ module Chitragupta
       data[:meta][:format][:category] = Chitragupta::Constants::CATEGORY_PROCESS
     end
 
-    def populate_bg_worker_data(data, message)
+    def populate_worker_data(data, message)
       data[:meta][:format][:category] = Chitragupta::Constants::CATEGORY_WORKER
 
       data[:data][:thread_id] = Chitragupta::Constants::THREAD_ID_PREFIX + Thread.current.object_id.to_s(36)
@@ -77,7 +77,7 @@ module Chitragupta
       else
         data[:log] = {}
         data[:meta] = {}
-        data[:log][:dynamic_data] = message.is_a?(String) ? message : message.inspect if !message.nil?
+        data[:log][:dynamic_data] = message.is_a?(String) ? message : message.inspect if message
       end
 
       data[:meta][:format] = {}
@@ -87,7 +87,7 @@ module Chitragupta
         elsif called_as_rake?
           populate_task_data(data, message)
         elsif called_as_sidekiq?
-          populate_bg_worker_data(data, message)
+          populate_worker_data(data, message)
         end
       rescue; end
       return data

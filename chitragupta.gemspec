@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
   spec.name          = "chitragupta"
   spec.version       = Chitragupta::VERSION
   spec.authors       = ["MitP1997"]
-  spec.email         = ["mit@browserstack.com"]
+  spec.email         = ["data@browserstack.com"]
 
   spec.summary       = "Rails SDK for structured JSON logging."
   spec.description   = "An easy to install gem to convert unstructured logs into informative structured logs"

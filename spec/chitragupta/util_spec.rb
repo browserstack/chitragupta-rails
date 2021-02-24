@@ -170,7 +170,7 @@ RSpec.describe Chitragupta::Util do
   end
 
 
-  pending 'populate_bg_worker_data'
+  pending 'populate_worker_data'
 
 
   context 'initialize_data' do
@@ -188,11 +188,11 @@ RSpec.describe Chitragupta::Util do
       expect(Chitragupta::Util.send(:initialize_data, nil)).to eq({log: {}, meta: {format: {}}, data: {}})
     end
 
-    it 'should create common keys and add call populate_bg_worker_data if called_as_sidekiq? returns true' do
+    it 'should create common keys and add call populate_worker_data if called_as_sidekiq? returns true' do
       expect(Chitragupta::Util).to receive(:called_as_rails_server?).and_return(false)
       expect(Chitragupta::Util).to receive(:called_as_rake?).and_return(false)
       expect(Chitragupta::Util).to receive(:called_as_sidekiq?).and_return(true)
-      expect(Chitragupta::Util).to receive(:populate_bg_worker_data).once
+      expect(Chitragupta::Util).to receive(:populate_worker_data).once
       expect(Chitragupta::Util.send(:initialize_data, nil)).to eq({log: {}, meta: {format: {}}, data: {}})
     end
 
