@@ -12,7 +12,8 @@ module Chitragupta
     end
 
     def called_as_rails_server?
-      return defined?(Rails::Server) && true || false
+      # Rails::Server works in development mode whereas ::PhusionPassenger in production environment
+      return (defined?(Rails::Server) || defined?(::PhusionPassenger)) && true || false
     end
 
     def called_as_sidekiq?
