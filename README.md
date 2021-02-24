@@ -15,10 +15,10 @@ Add the following line in either `application.rb` or `<environment>.rb`
 ```ruby
 require "chitragupta"
 
-Chitragupta::setup_application_logger(RailsApplicationModule, current_user_function)
+Chitragupta::setup_application_logger(RailsApplicationModule, :current_user_function)
 ```
 The `RailsApplicationModule` should be replaced with the rails application module.
-The `current_user_function` should be replaced with a callable which when called returns the current user object.
+The `:current_user_function` should be replaced with a symbol of the callable which when called returns the current user object.
 
 ## Contributing
 
