@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = "Rails SDK for structured JSON logging."
   spec.description   = "An easy to install gem to convert unstructured logs into informative structured logs"
-  spec.homepage      = "https://github.com/browserstack/chitragupta-ruby"
+  spec.homepage      = "https://github.com/browserstack/chitragupta-rails"
   spec.license       = "MIT"
 
   # Specify which files should be added to the gem when it is released.

@@ -42,7 +42,6 @@ module Chitragupta
 
   private
   def configure_app(app)
-    # debugger
     app::Application.configure do
       config.log_formatter = JsonLogFormatter.new if Chitragupta::Util.called_as_rails_server? || Chitragupta::Util.called_as_rake? || Chitragupta::Util.called_as_sidekiq?
       if Chitragupta::Util.called_as_rails_server?
