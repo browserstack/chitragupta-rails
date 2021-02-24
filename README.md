@@ -18,7 +18,7 @@ Or install it yourself as:
 
 ## Usage
 
-Add the following line in either application.rb or <environment>.rb
+Add the following line in either `application.rb` or `<environment>.rb`
 
 ```ruby
 require "chitragupta"
