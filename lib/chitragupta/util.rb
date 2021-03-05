@@ -81,7 +81,7 @@ module Chitragupta
         data[:log][:dynamic_data] = message.is_a?(String) ? message : message.inspect if message
       end
 
-      data[:meta][:format] = {}
+      data[:meta][:format] ||= {}
       begin
         if called_as_rails_server?
           populate_server_data(data, message)
