@@ -1,4 +1,3 @@
-require "lograge"
 require "securerandom"
 require "chitragupta/version"
 require "chitragupta/constants"
@@ -15,6 +14,7 @@ module Chitragupta
   def setup_application_logger(app, current_user_caller=nil)
 
     if Chitragupta::Util.called_as_rails_server?
+      require "lograge"
       require "chitragupta/active_support/instrumentation"
 
       ActionController::Instrumentation.current_user_caller = current_user_caller
