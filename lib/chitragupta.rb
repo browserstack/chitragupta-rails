@@ -3,11 +3,10 @@ require "chitragupta/version"
 require "chitragupta/constants"
 require "chitragupta/util"
 require "chitragupta/json_log_formatter"
-require "chitragupta/active_support/tagged_logging/formatter"
 
 module Chitragupta
   extend self
-  mattr_accessor :payload
+  attr_accessor :payload
 
   # The gem can be used by adding the following in any of the rails initializations: application.rb / environment.rb
   # Chitragupta::setup_application_logger(RailsApplicationModule, current_user_function)
@@ -15,6 +14,7 @@ module Chitragupta
 
     if Chitragupta::Util.called_as_rails_server?
       require "lograge"
+      require "chitragupta/active_support/tagged_logging/formatter"
       require "chitragupta/active_support/instrumentation"
 
       ActionController::Instrumentation.current_user_caller = current_user_caller
