@@ -1,8 +1,11 @@
 require "securerandom"
 require "chitragupta/version"
 require "chitragupta/constants"
+require "chitragupta/categories"
+require "chitragupta/format_versions"
 require "chitragupta/util"
 require "chitragupta/json_log_formatter"
+require "chitragupta/logger"
 
 module Chitragupta
   extend self

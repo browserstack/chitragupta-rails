@@ -46,18 +46,21 @@ module Chitragupta
       data[:data][:response][:view_rendering_duration] = message[:view] rescue nil
       data[:data][:response][:db_query_duration] = message[:db] rescue nil
 
-      data[:meta][:format][:category] = Chitragupta::Constants::CATEGORY_SERVER
+      data[:meta][:format][:category] = Chitragupta::Categories::SERVER
+      data[:meta][:format][:version] = Chitragupta::FormatVersions::SERVER
     end
 
     def populate_task_data(data, message)
       data[:data][:name] = Rake.application.current_task
       data[:data][:execution_id] = Rake.application.execution_id
 
-      data[:meta][:format][:category] = Chitragupta::Constants::CATEGORY_PROCESS
+      data[:meta][:format][:category] = Chitragupta::Categories::PROCESS
+      data[:meta][:format][:version] = Chitragupta::FormatVersions::PROCESS
     end
 
     def populate_worker_data(data, message)
-      data[:meta][:format][:category] = Chitragupta::Constants::CATEGORY_WORKER
+      data[:meta][:format][:category] = Chitragupta::Categories::WORKER
+      data[:meta][:format][:version] = Chitragupta::FormatVersions::WORKER
 
       data[:data][:thread_id] = Chitragupta::Constants::THREAD_ID_PREFIX + Thread.current.object_id.to_s(36)
       if Thread.current[:sidekiq_context].nil?
