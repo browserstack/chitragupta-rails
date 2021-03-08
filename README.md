@@ -25,6 +25,11 @@ In case you have custom logger objects created, you can change the formatter(as 
 logger = Logger.new(STDOUT)
 logger.formatter = Chitragupta::JsonLogFormatter.new
 ```
+OR
+You can create logger object as follows
+```
+logger = Chitragupta::Logger.new(STDOUT)
+```
 
 ## Contributing
 
