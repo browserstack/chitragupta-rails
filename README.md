@@ -20,6 +20,19 @@ Chitragupta::setup_application_logger(RailsApplicationModule, :current_user_func
 The `RailsApplicationModule` should be replaced with the rails application module.
 The `:current_user_function` should be replaced with a symbol of the callable which when called returns the current user object.
 
+For additional logs, you can use `Rails.logger`
+OR
+You can create logger object as follows
+```
+logger = Chitragupta::Logger.new(STDOUT)
+```
+
+In case you have custom logger objects created, you can change the formatter(as below) to ensure the logs are structured.
+```
+logger = Logger.new(STDOUT)
+logger.formatter = Chitragupta::JsonLogFormatter.new
+```
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/browserstack/chitragupta.
