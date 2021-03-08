@@ -1,9 +1,8 @@
 module Chitragupta
   class Logger < ::Logger
-    def initialize(*)
-      logger = super(*)
-      logger.formatter = Chitragupta::JsonLogFormatter.new
-      return logger
+    def initialize(*args, **kwargs)
+      super
+      @formatter = Chitragupta::JsonLogFormatter.new
     end
   end
 end
