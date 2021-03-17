@@ -35,7 +35,7 @@ logger.formatter = Chitragupta::JsonLogFormatter.new
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/browserstack/chitragupta.
+Bug reports and pull requests are welcome on GitHub at https://github.com/browserstack/chitragupta-rails.
 
 ## License
 
