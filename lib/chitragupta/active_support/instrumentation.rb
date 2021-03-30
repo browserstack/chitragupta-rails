@@ -13,7 +13,7 @@ module ActionController
         :path       => (request.fullpath.split("?")[0] rescue "unknown"),
         :request_id => request.uuid,
         :ip         => request.ip,
-        :headers    => request.headers['X-Chitragupta-log-id']
+        :log_id    => request.headers['X-Chitragupta-log-id']
       }
 
       ActiveSupport::Notifications.instrument("start_processing.action_controller", raw_payload.dup)
