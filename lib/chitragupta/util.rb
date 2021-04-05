@@ -48,6 +48,8 @@ module Chitragupta
 
       data[:meta][:format][:category] = Chitragupta::Categories::SERVER
       data[:meta][:format][:version] = Chitragupta::FormatVersions::SERVER
+
+      data[:log][:id] ||= Chitragupta.payload[:log_id]
     end
 
     def populate_task_data(data, message)
