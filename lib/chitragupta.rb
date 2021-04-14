@@ -27,6 +27,10 @@ module Chitragupta
       ActiveSupport::Notifications.subscribe "start_processing.action_controller" do |_name, _started, _finished, _unique_id, data|
         Chitragupta.payload = data
       end
+
+      ActiveSupport::Notifications.subscribe "halted_callback.action_controller" do |_name, _started, _finished, _unique_id, data|
+        Rails.logger.info({ log: { kind: 'FILTER_CHAIN_HALTED', dynamic_data: "#{data[:filter].inspect} rendered or redirected" }})
+      end
     end
 
     if Chitragupta::Util.called_as_rake?
