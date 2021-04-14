@@ -15,9 +15,11 @@ module Chitragupta
   # Chitragupta::setup_application_logger(RailsApplicationModule, current_user_function)
   def setup_application_logger(app, current_user_caller=nil)
 
+    # Should be required only when the rails application is configuring the gem to be used.
+    require "chitragupta/active_support/tagged_logging/formatter"
+
     if Chitragupta::Util.called_as_rails_server?
       require "lograge"
-      require "chitragupta/active_support/tagged_logging/formatter"
       require "chitragupta/active_support/instrumentation"
 
       ActionController::Instrumentation.current_user_caller = current_user_caller
