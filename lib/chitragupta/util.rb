@@ -50,7 +50,7 @@ module Chitragupta
 
       data[:meta][:format][:category] = Chitragupta::Categories::SERVER
       data[:meta][:format][:version] = Chitragupta::FormatVersions::SERVER
-      data[:meta][:hostname] = Socket.gethostname
+      data[:meta][:host] = Socket.gethostname
 
       data[:log][:id] ||= Chitragupta.payload[:log_id]
     end
@@ -61,13 +61,13 @@ module Chitragupta
 
       data[:meta][:format][:category] = Chitragupta::Categories::PROCESS
       data[:meta][:format][:version] = Chitragupta::FormatVersions::PROCESS
-      data[:meta][:hostname] = Socket.gethostname
+      data[:meta][:host] = Socket.gethostname
     end
 
     def populate_worker_data(data, message)
       data[:meta][:format][:category] = Chitragupta::Categories::WORKER
       data[:meta][:format][:version] = Chitragupta::FormatVersions::WORKER
-      data[:meta][:hostname] = Socket.gethostname
+      data[:meta][:host] = Socket.gethostname
 
       data[:data][:thread_id] = Chitragupta::Constants::THREAD_ID_PREFIX + Thread.current.object_id.to_s(36)
       if Thread.current[:sidekiq_context].nil?
