@@ -103,8 +103,6 @@ RSpec.describe Chitragupta::Util do
           }
       }
       Chitragupta::Util.send(:populate_rails_server_data, data, nil)
-      puts data
-      puts expected_output
       expect(data).to eq(expected_output)
     end
 
