@@ -19,6 +19,11 @@ module Chitragupta
       return (defined?(Rails::Server) || defined?(::PhusionPassenger)) && true || false
     end
 
+    def called_as_rack_server?
+      # Check if its called using rack up and Rack server is defined to log for rack
+      return File.basename($PROGRAM_NAME) == "rackup" && defined?(Rack::Server)
+    end
+
     def called_as_sidekiq?
       return Sidekiq.server? && true || false
     end
@@ -37,8 +42,6 @@ module Chitragupta
       data[:data][:response] = {}
       data[:data][:request][:method] = Chitragupta.payload[:method]
       data[:data][:request][:endpoint] = Chitragupta.payload[:path]
-      data[:data][:request][:controller] = Chitragupta.payload[:controller]
-      data[:data][:request][:action] = Chitragupta.payload[:action]
       data[:data][:request][:ip] = Chitragupta.payload[:ip]
       data[:data][:request][:id] = Chitragupta.payload[:request_id]
       data[:data][:request][:user_id] = Chitragupta.payload[:user_id]
@@ -46,14 +49,25 @@ module Chitragupta
 
       data[:data][:response][:status] = message[:status] rescue nil
       data[:data][:response][:duration] = message[:duration] rescue nil
-      data[:data][:response][:view_rendering_duration] = message[:view] rescue nil
-      data[:data][:response][:db_query_duration] = message[:db] rescue nil
 
       data[:meta][:format][:category] = Chitragupta::Categories::SERVER
       data[:meta][:format][:version] = Chitragupta::FormatVersions::SERVER
       data[:meta][:host] = Socket.gethostname
 
       data[:log][:id] ||= Chitragupta.payload[:log_id]
+    end
+
+    def populate_rails_server_data(data, message)
+      populate_server_data(data, message)
+      data[:data][:request][:controller] = Chitragupta.payload[:controller]
+      data[:data][:request][:action] = Chitragupta.payload[:action]
+
+      data[:data][:response][:view_rendering_duration] = message[:view] rescue nil
+      data[:data][:response][:db_query_duration] = message[:db] rescue nil
+    end
+
+    def populate_ruby_server_data(data, message)
+      populate_server_data(data, message)
     end
 
     def populate_task_data(data, message)
@@ -95,7 +109,9 @@ module Chitragupta
       data[:meta][:format] ||= {}
       begin
         if called_as_rails_server?
-          populate_server_data(data, message)
+          populate_rails_server_data(data, message)
+        elsif called_as_rack_server?
+          populate_ruby_server_data(data, message)
         elsif called_as_rake?
           populate_task_data(data, message)
         elsif called_as_sidekiq?

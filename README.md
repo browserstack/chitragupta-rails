@@ -21,6 +21,32 @@ Chitragupta::setup_application_logger(RailsApplicationModule, :current_user_func
 The `RailsApplicationModule` should be replaced with the rails application module.
 The `:current_user_function` should be replaced with a symbol of the callable which when called returns the current user object.
 
+### Ruby Server Application
+Sample code block:
+```ruby
+require "chitragupta"
+
+cg_logger = Logger.new('/tmp/already_existing_logfile.log')
+cg_logger.formatter = Chitragupta::JsonLogFormatter.new
+
+# for sinatra application
+Chitragupta.payload = {
+  'method': request.request_method,
+  'path': request.path_info,
+  'ip': request.ip,
+  'request_id': 1234, # Request ID goes here
+  'user_id': 1, # Requesting user ID goes here
+  'params': request.params
+}
+cg_logger.info({"status": 200, # status code of server request
+                "duration": 100,
+                "log": { "id": 12345,
+                         "kind": "dc_log_migration", # Log kind to be added here
+                         "dynamic_data": "Starting remote call for URL"}
+               })
+
+```
+
 ### Additional Logging
 You can use `Rails.logger`
 OR

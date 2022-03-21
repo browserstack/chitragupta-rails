@@ -69,7 +69,7 @@ RSpec.describe Chitragupta::Util do
   end
 
 
-  context 'populate_server_data' do
+  context 'populate_rails_server_data' do
 
     before(:each) do
       Chitragupta.payload = {method: "GET", path: "/", controller: "TestController", action: "dummy", ip: "127.0.0.1", request_id: "123asd", user_id: 1, params: {a: 1}}
@@ -102,7 +102,9 @@ RSpec.describe Chitragupta::Util do
               }
           }
       }
-      Chitragupta::Util.send(:populate_server_data, data, nil)
+      Chitragupta::Util.send(:populate_rails_server_data, data, nil)
+      puts data
+      puts expected_output
       expect(data).to eq(expected_output)
     end
 
@@ -139,7 +141,7 @@ RSpec.describe Chitragupta::Util do
           view: 12.34,
           db: 0.09
       }
-      Chitragupta::Util.send(:populate_server_data, data, message)
+      Chitragupta::Util.send(:populate_rails_server_data, data, message)
       expect(data).to eq(expected_output)
     end
 
