@@ -12,7 +12,7 @@ module ActionController
         :method     => request.method,
         :path       => (request.fullpath.split("?")[0] rescue "unknown"),
         :request_id => request.uuid,
-        :ip         => request.ip,
+        :ip         => request.remote_ip,
         :log_id    => request.headers['X-Chitragupta-log-id']
       }
 
