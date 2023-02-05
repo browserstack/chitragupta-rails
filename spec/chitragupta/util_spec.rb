@@ -93,7 +93,8 @@ RSpec.describe Chitragupta::Util do
                   status: nil,
                   duration: nil,
                   view_rendering_duration: nil,
-                  db_query_duration: nil
+                  db_query_duration: nil,
+                  db_query_count: nil
               }
           },
           meta: {
@@ -124,7 +125,8 @@ RSpec.describe Chitragupta::Util do
                   status: 200,
                   duration: 10.01,
                   view_rendering_duration: 12.34,
-                  db_query_duration: 0.09
+                  db_query_duration: 0.09,
+                  db_query_count: 10
               }
           },
           meta: {
@@ -137,7 +139,8 @@ RSpec.describe Chitragupta::Util do
           status: 200,
           duration: 10.01,
           view: 12.34,
-          db: 0.09
+          db: 0.09,
+          query_count: 10
       }
       Chitragupta::Util.send(:populate_rails_server_data, data, message)
       expect(data).to eq(expected_output)

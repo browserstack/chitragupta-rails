@@ -64,6 +64,7 @@ module Chitragupta
 
       data[:data][:response][:view_rendering_duration] = message[:view] rescue nil
       data[:data][:response][:db_query_duration] = message[:db] rescue nil
+      data[:data][:response][:db_query_count] = message[:query_count] rescue nil
     end
 
     def populate_ruby_server_data(data, message)
