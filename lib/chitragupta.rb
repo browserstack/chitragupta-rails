@@ -57,6 +57,9 @@ module Chitragupta
         require "chitragupta/request_log_formatter"
         config.lograge.enabled = true
         config.lograge.formatter = RequestLogFormatter::FORMAT
+        config.lograge.custom_options = lambda do |event|
+          {:query_count => event.payload[:query_count]}
+        end
       end
 
       # setting the log_tags to empty array to ensure that the message being generated does not contain the unwanted tags
