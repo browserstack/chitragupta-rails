@@ -5,8 +5,8 @@ module Chitragupta
   module Util
     extend self
 
-    def sanitize_keys(log_level, timestamp, message)
-      data = initialize_data(message)
+    def sanitize_keys(log_level, timestamp, message, should_trim_long_string)
+      data = initialize_data(message, should_trim_long_string)
 
       data[:log][:level] = log_level
       data[:meta][:timestamp] = timestamp
@@ -37,7 +37,7 @@ module Chitragupta
     end
 
     private
-    def populate_server_data(data, message)
+    def populate_server_data(data, message, should_trim_long_string)
       data[:data][:request] = {}
       data[:data][:response] = {}
       data[:data][:request][:method] = Chitragupta.payload[:method]
@@ -45,7 +45,7 @@ module Chitragupta
       data[:data][:request][:ip] = Chitragupta.payload[:ip]
       data[:data][:request][:id] = Chitragupta.payload[:request_id]
       data[:data][:request][:user_id] = Chitragupta.payload[:user_id]
-      data[:data][:request][:params] = Chitragupta.payload[:params].to_json.to_s
+      data[:data][:request][:params] = trim_long_string(Chitragupta.payload[:params].to_json.to_s, should_trim_long_string)
 
       data[:data][:response][:status] = message[:status] rescue nil
       data[:data][:response][:duration] = message[:duration] rescue nil
@@ -57,8 +57,8 @@ module Chitragupta
       data[:log][:id] ||= Chitragupta.payload[:log_id]
     end
 
-    def populate_rails_server_data(data, message)
-      populate_server_data(data, message)
+    def populate_rails_server_data(data, message, should_trim_long_string)
+      populate_server_data(data, message, should_trim_long_string)
       data[:data][:request][:controller] = Chitragupta.payload[:controller]
       data[:data][:request][:action] = Chitragupta.payload[:action]
 
@@ -66,8 +66,8 @@ module Chitragupta
       data[:data][:response][:db_query_duration] = message[:db] rescue nil
     end
 
-    def populate_ruby_server_data(data, message)
-      populate_server_data(data, message)
+    def populate_ruby_server_data(data, message, should_trim_long_string)
+      populate_server_data(data, message, should_trim_long_string)
     end
 
     def populate_task_data(data, message)
@@ -93,7 +93,7 @@ module Chitragupta
       data[:data][:worker_name] = worker_name
     end
 
-    def initialize_data(message)
+    def initialize_data(message, should_trim_long_string)
       data = {}
       data[:data] = {}
 
@@ -103,15 +103,15 @@ module Chitragupta
       else
         data[:log] = {}
         data[:meta] = {}
-        data[:log][:dynamic_data] = message.is_a?(String) ? message : message.inspect if message
+        data[:log][:dynamic_data] = message.is_a?(String) ? trim_long_string(message, should_trim_long_string) : trim_long_string(message.inspect, should_trim_long_string) if message
       end
 
       data[:meta][:format] ||= {}
       begin
         if called_as_rails_server?
-          populate_rails_server_data(data, message)
+          populate_rails_server_data(data, message, should_trim_long_string)
         elsif called_as_rack_server?
-          populate_ruby_server_data(data, message)
+          populate_ruby_server_data(data, message, should_trim_long_string)
         elsif called_as_rake?
           populate_task_data(data, message)
         elsif called_as_sidekiq?
@@ -119,6 +119,13 @@ module Chitragupta
         end
       rescue; end
       return data
+    end
+
+    def trim_long_string(input_str, should_trim_long_string)
+      if(should_trim_long_string)
+        return input_str.slice(0, Chitragupta::Constants::MAX_STR_LENGTH)
+      end
+      return input_str
     end
 
   end
