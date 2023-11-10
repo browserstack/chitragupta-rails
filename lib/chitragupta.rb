@@ -13,7 +13,7 @@ module Chitragupta
 
   # The gem can be used by adding the following in any of the rails initializations: application.rb / environment.rb
   # Chitragupta::setup_application_logger(RailsApplicationModule, current_user_function)
-  def setup_application_logger(app, current_user_caller=nil)
+  def setup_application_logger(app, current_user_caller=nil, should_trim_long_string=false)
 
     # Should be required only when the rails application is configuring the gem to be used.
     require "chitragupta/active_support/tagged_logging/formatter"
@@ -38,10 +38,10 @@ module Chitragupta
     end
 
     if Chitragupta::Util.called_as_sidekiq?
-      Sidekiq.logger.formatter = JsonLogFormatter.new
+      Sidekiq.logger.formatter = JsonLogFormatter.new(should_trim_long_string)
     end
 
-    configure_app(app)
+    configure_app(app, should_trim_long_string)
   end
 
 
@@ -50,9 +50,9 @@ module Chitragupta
   end
 
   private
-  def configure_app(app)
+  def configure_app(app, should_trim_long_string)
     app::Application.configure do
-      config.log_formatter = JsonLogFormatter.new if Chitragupta::Util.called_as_rails_server? || Chitragupta::Util.called_as_rake? || Chitragupta::Util.called_as_sidekiq?
+      config.log_formatter = JsonLogFormatter.new(should_trim_long_string) if Chitragupta::Util.called_as_rails_server? || Chitragupta::Util.called_as_rake? || Chitragupta::Util.called_as_sidekiq?
       if Chitragupta::Util.called_as_rails_server?
         require "chitragupta/request_log_formatter"
         config.lograge.enabled = true
