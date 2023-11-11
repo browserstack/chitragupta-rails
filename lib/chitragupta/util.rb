@@ -45,6 +45,7 @@ module Chitragupta
       data[:data][:request][:ip] = Chitragupta.payload[:ip]
       data[:data][:request][:id] = Chitragupta.payload[:request_id]
       data[:data][:request][:user_id] = Chitragupta.payload[:user_id]
+      data[:data][:request][:test] = "starting trimming of params"
       data[:data][:request][:params] = trim_long_string(Chitragupta.payload[:params].to_json.to_s, should_trim_long_string)
 
       data[:data][:response][:status] = message[:status] rescue nil
