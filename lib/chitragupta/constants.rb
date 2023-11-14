@@ -11,6 +11,6 @@ module Chitragupta
     CATEGORY_PROCESS = "process"
     CATEGORY_WORKER = "worker"
 
-    MAX_STR_LENGTH = 10 # 400000
+    MAX_STR_LENGTH = 400000
   end
 end
