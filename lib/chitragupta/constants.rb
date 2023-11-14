@@ -10,5 +10,7 @@ module Chitragupta
     CATEGORY_SERVER = "server"
     CATEGORY_PROCESS = "process"
     CATEGORY_WORKER = "worker"
+
+    MAX_STR_LENGTH = 400000
   end
 end
