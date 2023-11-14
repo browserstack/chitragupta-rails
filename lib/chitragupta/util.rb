@@ -103,7 +103,7 @@ module Chitragupta
       else
         data[:log] = {}
         data[:meta] = {}
-        data[:log][:dynamic_data] = message.is_a?(String) ? trim_long_string(message, should_trim_long_string) : trim_long_string(message.inspect, should_trim_long_string) if message
+        data[:log][:dynamic_data] = message.is_a?(String) ? message : message.inspect if message
       end
 
       data[:meta][:format] ||= {}
