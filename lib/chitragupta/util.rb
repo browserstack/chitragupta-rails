@@ -36,6 +36,10 @@ module Chitragupta
       return defined?(Rails::Console) && true || false
     end
 
+    def trim_long_string(input_str, limit)
+      return input_str.slice(0, limit)
+    end
+
     private
     def populate_server_data(data, message)
       data[:data][:request] = {}
@@ -117,6 +121,9 @@ module Chitragupta
         elsif called_as_sidekiq?
           populate_worker_data(data, message)
         end
+
+        data[:log][:dynamic_data] = trim_long_string(data[:log][:dynamic_data], Chitragupta::Constants::FIELD_LENGTH_LIMITS[:dynamic_data]) rescue nil
+        data[:data][:request][:params] = trim_long_string(data[:data][:request][:params], Chitragupta::Constants::FIELD_LENGTH_LIMITS[:params]) rescue nil
       rescue; end
       return data
     end

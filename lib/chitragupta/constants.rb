@@ -10,5 +10,11 @@ module Chitragupta
     CATEGORY_SERVER = "server"
     CATEGORY_PROCESS = "process"
     CATEGORY_WORKER = "worker"
+
+    FIELD_LENGTH_LIMITS = {
+      :dynamic_data => 10000,
+      :headers => 8000,
+      :params => 8000
+    }
   end
 end
