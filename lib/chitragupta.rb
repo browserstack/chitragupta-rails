@@ -25,8 +25,8 @@ module Chitragupta
       ActionController::Instrumentation.current_user_caller = current_user_caller
 
       ActiveSupport::Notifications.subscribe "start_processing.action_controller" do |_name, _started, _finished, _unique_id, data|
-        data[:params] = Chitragupta::Util::trim_long_string(data[:params].to_json.to_s, Chitragupta::Constants::FIELD_LENGTH_LIMITS[:params])
-        data[:headers] = Chitragupta::Util::trim_long_string(data[:headers].to_h.to_json.to_s, Chitragupta::Constants::FIELD_LENGTH_LIMITS[:headers])
+        data[:params] = Chitragupta::Util::trim_long_string(data[:params].to_json.to_s, Chitragupta::Constants::FIELD_LENGTH_LIMITS[:params]) rescue nil
+        data[:headers] = Chitragupta::Util::trim_long_string(data[:headers].to_h.to_json.to_s, Chitragupta::Constants::FIELD_LENGTH_LIMITS[:headers]) rescue nil
         Chitragupta.payload = data
       end
 
