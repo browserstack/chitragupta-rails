@@ -117,8 +117,16 @@ module Chitragupta
         elsif called_as_sidekiq?
           populate_worker_data(data, message)
         end
+
+        data[:log][:dynamic_data] = trim_long_string(data[:log][:dynamic_data], Chitragupta::Constants::FIELD_LENGTH_LIMITS[:dynamic_data])
+        data[:data][:request][:params] = trim_long_string(data[:data][:request][:params], Chitragupta::Constants::FIELD_LENGTH_LIMITS[:params])
+        data[:data][:request][:headers] = trim_long_string(data[:data][:request][:headers], Chitragupta::Constants::FIELD_LENGTH_LIMITS[:headers])
       rescue; end
       return data
+    end
+
+    def trim_long_string(input_str, limit)
+        return input_str.slice(0, limit)
     end
 
   end
