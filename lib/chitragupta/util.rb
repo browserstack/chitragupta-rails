@@ -36,6 +36,10 @@ module Chitragupta
       return defined?(Rails::Console) && true || false
     end
 
+    def trim_long_string(input_str, limit)
+      return input_str.slice(0, limit)
+    end
+
     private
     def populate_server_data(data, message)
       data[:data][:request] = {}
@@ -123,10 +127,6 @@ module Chitragupta
         data[:data][:request][:headers] = trim_long_string(data[:data][:request][:headers], Chitragupta::Constants::FIELD_LENGTH_LIMITS[:headers])
       rescue; end
       return data
-    end
-
-    def trim_long_string(input_str, limit)
-        return input_str.slice(0, limit)
     end
 
   end
