@@ -12,9 +12,9 @@ module Chitragupta
     CATEGORY_WORKER = "worker"
 
     FIELD_LENGTH_LIMITS = {
-      :dynamic_data => 10000,
-      :headers => 8000,
-      :params => 8000
+      :dynamic_data => 5000,
+      :headers => 1000,
+      :params => 10000
     }
   end
 end
