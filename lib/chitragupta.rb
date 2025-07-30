@@ -6,6 +6,8 @@ require "chitragupta/format_versions"
 require "chitragupta/util"
 require "chitragupta/json_log_formatter"
 require "chitragupta/logger"
+require "chitragupta/puma_events_patch"
+Chitragupta::PumaEventsPatch.install!
 
 module Chitragupta
   extend self
