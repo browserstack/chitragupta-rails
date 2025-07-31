@@ -17,16 +17,7 @@ module Chitragupta
     end
 
     def patch_log_formatter
-      # Patch Puma's log_formatter if it's not already set
-      return if defined?(::Rails) && ::Rails.application.config.respond_to?(:puma) && 
-                ::Rails.application.config.puma.respond_to?(:log_formatter)
-      
-      # Add to Rails config if possible, otherwise patch directly
-      if defined?(::Rails) && ::Rails.application
-        ::Rails.application.configure do
-          # This will be set in config/puma.rb by our integration
-        end
-      end
+      return
     end
 
     def patch_error_methods
