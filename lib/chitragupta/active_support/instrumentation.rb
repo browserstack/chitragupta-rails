@@ -14,7 +14,7 @@ module ActionController
         :request_id => request.uuid,
         :ip         => request.remote_ip,
         :log_id    => request.headers['X-Chitragupta-log-id'],
-        :request_source => request.headers['X-Request-Source'] || 'unknown'
+        :request_source => request.headers['request-source'] || 'unknown'
       }
 
       ActiveSupport::Notifications.instrument("start_processing.action_controller", raw_payload.dup)
