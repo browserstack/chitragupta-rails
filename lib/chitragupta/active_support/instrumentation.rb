@@ -16,7 +16,7 @@ module ActionController
         :log_id    => request.headers['X-Chitragupta-log-id'],
         :request_source => request.headers['request-source'] || 'unknown',
         :browserstack_user_id => (send(current_user_caller).browserstack_user_id rescue nil),
-        :browserstack_group_id => (send(current_user_caller).group.browserstack_user_id rescue nil),
+        :browserstack_group_id => (send(current_user_caller).group.browserstack_group_id rescue nil),
       }
 
       ActiveSupport::Notifications.instrument("start_processing.action_controller", raw_payload.dup)
