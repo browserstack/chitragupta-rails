@@ -9,7 +9,6 @@ require "chitragupta/logger"
 
 module Chitragupta
   extend self
-  attr_accessor :payload
 
   # The gem can be used by adding the following in any of the rails initializations: application.rb / environment.rb
   # Chitragupta::setup_application_logger(RailsApplicationModule, current_user_function)
@@ -26,7 +25,7 @@ module Chitragupta
 
       ActiveSupport::Notifications.subscribe "start_processing.action_controller" do |_name, _started, _finished, _unique_id, data|
         data[:params] = Chitragupta::Util::trim_long_string(data[:params].to_json.to_s, Chitragupta::Constants::FIELD_LENGTH_LIMITS[:params]) rescue nil
-        Chitragupta.payload = data
+        self.payload = data
       end
 
       ActiveSupport::Notifications.subscribe "halted_callback.action_controller" do |_name, _started, _finished, _unique_id, data|
@@ -48,6 +47,14 @@ module Chitragupta
 
   def get_unique_log_id
     return SecureRandom.uuid
+  end
+
+  def payload
+    Thread.current[:chitragupta_payload]
+  end
+
+  def payload=(val)
+    Thread.current[:chitragupta_payload] = val
   end
 
   private

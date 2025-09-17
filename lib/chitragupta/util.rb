@@ -92,9 +92,14 @@ module Chitragupta
       if Thread.current[:sidekiq_context].nil?
         return
       end
-      worker_name, job_id = Thread.current[:sidekiq_context][0].split
-      data[:data][:job_id] = job_id
-      data[:data][:worker_name] = worker_name
+      if Thread.current[:sidekiq_context].is_a?(Hash)
+        data[:data][:job_id] = Thread.current[:sidekiq_context][:jid]
+        data[:data][:worker_name] = Thread.current[:sidekiq_context][:class]
+      else
+        worker_name, job_id = Thread.current[:sidekiq_context][0].split
+        data[:data][:job_id] = job_id
+        data[:data][:worker_name] = worker_name
+      end
     end
 
     def initialize_data(message)
