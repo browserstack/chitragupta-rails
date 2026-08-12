@@ -72,7 +72,7 @@ RSpec.describe Chitragupta::Util do
   context 'populate_rails_server_data' do
 
     before(:each) do
-      Chitragupta.payload = {method: "GET", path: "/", controller: "TestController", action: "dummy", ip: "127.0.0.1", request_id: "123asd", user_id: 1, params: {a: 1}}
+      Chitragupta.payload = {method: "GET", path: "/", controller: "TestController", action: "dummy", ip: "127.0.0.1", request_id: "123asd", user_id: 1, params: '{"a":1}'}
     end
 
     it 'should populate all the required key values for server request and nil for missing message values' do
