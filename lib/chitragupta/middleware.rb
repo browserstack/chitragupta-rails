@@ -7,6 +7,8 @@ module Chitragupta
     def call(env)
       Chitragupta.payload = {}
       @app.call(env)
+    ensure
+      Chitragupta.payload = {}
     end
   end
 end
