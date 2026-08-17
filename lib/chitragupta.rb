@@ -66,7 +66,9 @@ module Chitragupta
         require "chitragupta/middleware"
         config.lograge.enabled = true
         config.lograge.formatter = RequestLogFormatter::FORMAT
-        config.middleware.use Chitragupta::Middleware
+        # Outermost: index 0 needs no reference middleware, so it is safe on Rails 4.0,
+        # and the exit clear then runs after exception-logging middleware has read the context.
+        config.middleware.insert_before 0, Chitragupta::Middleware
       end
 
       # setting the log_tags to empty array to ensure that the message being generated does not contain the unwanted tags
