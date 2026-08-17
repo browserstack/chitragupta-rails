@@ -56,6 +56,19 @@ RSpec.describe "Chitragupta Rake task context" do
     expect(context.last).to eq(Rake.application.execution_id)
   end
 
+  it "keeps task attribution in threads the task spawns" do
+    context = nil
+    Rake::Task.define_task(:spawns_thread) do
+      Thread.new do
+        context = [Rake.application.current_task, Rake.application.execution_id]
+      end.join
+    end
+
+    Rake::Task[:spawns_thread].invoke
+
+    expect(context).to eq(["spawns_thread", Rake.application.execution_id])
+  end
+
   it "isolates concurrently executing tasks" do
     ready = Queue.new
     release = Queue.new
