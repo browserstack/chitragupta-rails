@@ -66,7 +66,7 @@ module Chitragupta
         require "chitragupta/middleware"
         config.lograge.enabled = true
         config.lograge.formatter = RequestLogFormatter::FORMAT
-        config.middleware.insert_after ActionDispatch::RequestId, Chitragupta::Middleware
+        config.middleware.unshift Chitragupta::Middleware
       end
 
       # setting the log_tags to empty array to ensure that the message being generated does not contain the unwanted tags
