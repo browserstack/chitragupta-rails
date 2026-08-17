@@ -49,7 +49,8 @@ module Chitragupta
       data[:data][:request][:ip] = Chitragupta.payload[:ip]
       data[:data][:request][:id] = Chitragupta.payload[:request_id]
       data[:data][:request][:user_id] = Chitragupta.payload[:user_id]
-      data[:data][:request][:params] = Chitragupta.payload[:params]
+      params = Chitragupta.payload[:params]
+      data[:data][:request][:params] = params.is_a?(String) ? params : params.to_json
 
       data[:data][:response][:status] = message[:status] rescue nil
       data[:data][:response][:duration] = message[:duration] rescue nil
