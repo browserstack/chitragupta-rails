@@ -36,7 +36,8 @@ Chitragupta.payload = {
   'ip': request.ip,
   'request_id': 1234, # Request ID goes here
   'user_id': 1, # Requesting user ID goes here
-  'params': request.params
+  # Rack/Sinatra params are unfiltered; drop credential-bearing keys before logging them
+  'params': request.params.reject { |key, _| key =~ /password|token|secret|api_key/i }
 }
 cg_logger.info({"status": 200, # status code of server request
                 "duration": 100,
