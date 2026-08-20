@@ -30,6 +30,9 @@ cg_logger = Logger.new('/tmp/already_existing_logfile.log')
 cg_logger.formatter = Chitragupta::JsonLogFormatter.new
 
 # for sinatra application
+require "chitragupta/middleware"
+use Chitragupta::Middleware
+
 Chitragupta.payload = {
   'method': request.request_method,
   'path': request.path_info,
