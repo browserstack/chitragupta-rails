@@ -30,13 +30,18 @@ cg_logger = Logger.new('/tmp/already_existing_logfile.log')
 cg_logger.formatter = Chitragupta::JsonLogFormatter.new
 
 # for sinatra application
+require "chitragupta/middleware"
+use Chitragupta::Middleware
+
 Chitragupta.payload = {
   'method': request.request_method,
   'path': request.path_info,
   'ip': request.ip,
   'request_id': 1234, # Request ID goes here
   'user_id': 1, # Requesting user ID goes here
-  'params': request.params
+  # The gem logs whatever it is given, and Rack/Sinatra params are unfiltered, so pass
+  # a copy your application has already run through its own parameter filter
+  'params': app_filtered_params(request.params)
 }
 cg_logger.info({"status": 200, # status code of server request
                 "duration": 100,

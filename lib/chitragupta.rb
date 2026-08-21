@@ -63,8 +63,12 @@ module Chitragupta
       config.log_formatter = JsonLogFormatter.new if Chitragupta::Util.called_as_rails_server? || Chitragupta::Util.called_as_rake? || Chitragupta::Util.called_as_sidekiq?
       if Chitragupta::Util.called_as_rails_server?
         require "chitragupta/request_log_formatter"
+        require "chitragupta/middleware"
         config.lograge.enabled = true
         config.lograge.formatter = RequestLogFormatter::FORMAT
+        # Outermost: index 0 needs no reference middleware, so it is safe on Rails 4.0,
+        # and the exit clear then runs after exception-logging middleware has read the context.
+        config.middleware.insert_before 0, Chitragupta::Middleware
       end
 
       # setting the log_tags to empty array to ensure that the message being generated does not contain the unwanted tags
