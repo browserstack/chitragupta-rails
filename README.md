@@ -39,9 +39,9 @@ Chitragupta.payload = {
   'ip': request.ip,
   'request_id': 1234, # Request ID goes here
   'user_id': 1, # Requesting user ID goes here
-  # The gem logs whatever it is given, and Rack/Sinatra params are unfiltered, so pass
-  # a copy your application has already run through its own parameter filter
-  'params': app_filtered_params(request.params)
+  # Values of keys in Chitragupta.filter_keys are logged as [FILTERED].
+  # Add more with Chitragupta.filter_keys += %w[card_number]
+  'params': request.params
 }
 cg_logger.info({"status": 200, # status code of server request
                 "duration": 100,
