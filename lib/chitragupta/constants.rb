@@ -11,6 +11,9 @@ module Chitragupta
     CATEGORY_PROCESS = "process"
     CATEGORY_WORKER = "worker"
 
+    DEFAULT_FILTER_KEYS = %w[password secret token api_key authorization access_token].freeze
+    FILTERED_VALUE = '[FILTERED]'
+
     FIELD_LENGTH_LIMITS = {
       :dynamic_data => 5000,
       :headers => 1000,

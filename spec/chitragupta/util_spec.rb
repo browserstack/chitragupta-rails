@@ -145,6 +145,15 @@ RSpec.describe Chitragupta::Util do
 
   end
 
+  context 'populate_ruby_server_data' do
+    it 'should replace filter_keys values in params with [FILTERED]' do
+      Chitragupta.payload = {params: {"user" => "a", "Password" => "secret", "nested" => [{"token" => "t", "id" => 1}]}}
+      data = {data: {}, meta: {format: {}}, log: {}}
+      Chitragupta::Util.send(:populate_ruby_server_data, data, nil)
+      expect(JSON.parse(data[:data][:request][:params])).to eq({"user" => "a", "Password" => "[FILTERED]", "nested" => [{"token" => "[FILTERED]", "id" => 1}]})
+    end
+  end
+
 
   context 'populate_task_data' do
 
