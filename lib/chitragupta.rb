@@ -57,6 +57,14 @@ module Chitragupta
     Thread.current[:chitragupta_payload] = val
   end
 
+  def filter_keys
+    @filter_keys ||= Chitragupta::Constants::DEFAULT_FILTER_KEYS.dup
+  end
+
+  def filter_keys=(keys)
+    @filter_keys = keys
+  end
+
   private
   def configure_app(app)
     app::Application.configure do

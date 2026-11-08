@@ -41,6 +41,19 @@ module Chitragupta
     end
 
     private
+    def filter_params(value)
+      case value
+      when Hash
+        value.each_with_object({}) do |(key, val), filtered|
+          filtered[key] = Chitragupta.filter_keys.include?(key.to_s.downcase) ? Chitragupta::Constants::FILTERED_VALUE : filter_params(val)
+        end
+      when Array
+        value.map { |val| filter_params(val) }
+      else
+        value
+      end
+    end
+
     def populate_server_data(data, message)
       data[:data][:request] = {}
       data[:data][:response] = {}
@@ -50,7 +63,7 @@ module Chitragupta
       data[:data][:request][:id] = Chitragupta.payload[:request_id]
       data[:data][:request][:user_id] = Chitragupta.payload[:user_id]
       params = Chitragupta.payload[:params]
-      data[:data][:request][:params] = params.is_a?(String) ? params : params.to_json
+      data[:data][:request][:params] = params.is_a?(String) ? params : filter_params(params).to_json
 
       data[:data][:response][:status] = message[:status] rescue nil
       data[:data][:response][:duration] = message[:duration] rescue nil
