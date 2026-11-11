@@ -1,5 +1,6 @@
 require "socket"
 require "json"
+require "uri"
 
 module Chitragupta
   module Util
@@ -41,11 +42,16 @@ module Chitragupta
     end
 
     private
+    def filtered_key?(key)
+      name = key.to_s.downcase
+      Chitragupta.filter_keys.any? { |filter_key| name.include?(filter_key.to_s.downcase) }
+    end
+
     def filter_params(value)
       case value
       when Hash
         value.each_with_object({}) do |(key, val), filtered|
-          filtered[key] = Chitragupta.filter_keys.include?(key.to_s.downcase) ? Chitragupta::Constants::FILTERED_VALUE : filter_params(val)
+          filtered[key] = filtered_key?(key) ? Chitragupta::Constants::FILTERED_VALUE : filter_params(val)
         end
       when Array
         value.map { |val| filter_params(val) }
@@ -84,8 +90,22 @@ module Chitragupta
       data[:data][:response][:db_query_duration] = message[:db] rescue nil
     end
 
+    def filter_string_params(params)
+      return params if params.empty?
+      return filter_params(JSON.parse(params)).to_json if params.start_with?("{", "[")
+      return Chitragupta::Constants::FILTERED_VALUE unless params.include?("=")
+      URI.decode_www_form(params).map do |key, val|
+        filtered_key?(key) ? "#{URI.encode_www_form_component(key)}=#{Chitragupta::Constants::FILTERED_VALUE}" : URI.encode_www_form([[key, val]])
+      end.join("&")
+    rescue JSON::ParserError, ArgumentError
+      Chitragupta::Constants::FILTERED_VALUE
+    end
+
     def populate_ruby_server_data(data, message)
       populate_server_data(data, message)
+      # Rails string params are already filtered and cut at 10,000 chars, so only Rack strings are parsed here.
+      params = Chitragupta.payload[:params]
+      data[:data][:request][:params] = filter_string_params(params) if params.is_a?(String)
     end
 
     def populate_task_data(data, message)

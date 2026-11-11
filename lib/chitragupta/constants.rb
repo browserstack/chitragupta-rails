@@ -11,7 +11,7 @@ module Chitragupta
     CATEGORY_PROCESS = "process"
     CATEGORY_WORKER = "worker"
 
-    DEFAULT_FILTER_KEYS = %w[password secret token api_key authorization access_token].freeze
+    DEFAULT_FILTER_KEYS = %w[password passwd secret token api_key authorization access_token].freeze
     FILTERED_VALUE = '[FILTERED]'
 
     FIELD_LENGTH_LIMITS = {

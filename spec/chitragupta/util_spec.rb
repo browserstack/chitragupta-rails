@@ -152,6 +152,40 @@ RSpec.describe Chitragupta::Util do
       Chitragupta::Util.send(:populate_ruby_server_data, data, nil)
       expect(JSON.parse(data[:data][:request][:params])).to eq({"user" => "a", "Password" => "[FILTERED]", "nested" => [{"token" => "[FILTERED]", "id" => 1}]})
     end
+
+    def ruby_params(params)
+      Chitragupta.payload = {params: params}
+      data = {data: {}, meta: {format: {}}, log: {}}
+      Chitragupta::Util.send(:populate_ruby_server_data, data, nil)
+      data[:data][:request][:params]
+    end
+
+    it 'should filter keys that contain a filter_keys entry' do
+      params = {"api_token" => "t", "client_secret" => "s", "user_password" => "p", "passwd" => "x", "id" => 1}
+      expect(JSON.parse(ruby_params(params))).to eq({"api_token" => "[FILTERED]", "client_secret" => "[FILTERED]", "user_password" => "[FILTERED]", "passwd" => "[FILTERED]", "id" => 1})
+    end
+
+    it 'should filter JSON string params' do
+      expect(JSON.parse(ruby_params('{"api_token":"t","id":1}'))).to eq({"api_token" => "[FILTERED]", "id" => 1})
+    end
+
+    it 'should filter form string params' do
+      expect(ruby_params("user=a&client_secret=s")).to eq("user=a&client_secret=[FILTERED]")
+    end
+
+    it 'should log [FILTERED] for string params that cannot be parsed' do
+      expect(ruby_params('{"api_token":"t"')).to eq("[FILTERED]")
+      expect(ruby_params("raw secret text")).to eq("[FILTERED]")
+    end
+  end
+
+  context 'populate_rails_server_data with string params' do
+    it 'should leave Rails params strings as they are' do
+      Chitragupta.payload = {params: '{"api_token":"already-filtered-by-rails"'}
+      data = {data: {}, meta: {format: {}}, log: {}}
+      Chitragupta::Util.send(:populate_rails_server_data, data, nil)
+      expect(data[:data][:request][:params]).to eq('{"api_token":"already-filtered-by-rails"')
+    end
   end
 
 
