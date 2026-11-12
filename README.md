@@ -39,7 +39,7 @@ Chitragupta.payload = {
   'ip': request.ip,
   'request_id': 1234, # Request ID goes here
   'user_id': 1, # Requesting user ID goes here
-  # Values of keys in Chitragupta.filter_keys are logged as [FILTERED].
+  # Values of keys containing any Chitragupta.filter_keys entry (case-insensitive) are logged as [FILTERED].
   # Add more with Chitragupta.filter_keys += %w[card_number]
   'params': request.params
 }
